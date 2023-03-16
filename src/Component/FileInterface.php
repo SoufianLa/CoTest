@@ -8,9 +8,9 @@ interface FileInterface
     /**
      * @return string
      */
-    public function getType(): ?string;
+    public function getName(): ?string;
 
-    public function setType(?string $type): void;
+    public function setName(?string $type);
 
     public function getFile(): ?\SplFileInfo;
 
@@ -20,5 +20,5 @@ interface FileInterface
 
     public function getPath(): ?string;
 
-    public function setPath(?string $path): void;
+    public function setPath(?string $path);
 }

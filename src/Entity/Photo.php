@@ -2,40 +2,47 @@
 
 namespace App\Entity;
 
+use App\Component\File as  FileComponent;
 use App\Repository\PhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Traits\TimestampableTrait;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @ORM\Entity(repositoryClass=PhotoRepository::class)
  */
-class Photo
+class Photo extends FileComponent
 {
     use TimestampableTrait;
+
+    public function __construct(File $file)
+    {
+        $this->file = $file;
+    }
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $url;
+    protected $path;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="photos")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    protected $user;
 
     public function getId(): ?int
     {
@@ -47,7 +54,7 @@ class Photo
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name)
     {
         $this->name = $name;
 
@@ -56,14 +63,7 @@ class Photo
 
     public function getUrl(): ?string
     {
-        return $this->url;
-    }
-
-    public function setUrl(string $url): self
-    {
-        $this->url = $url;
-
-        return $this;
+        return $this->getUri()."/".$this->path;
     }
 
     public function getUser(): ?User
@@ -71,10 +71,23 @@ class Photo
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser($user)
     {
         $this->user = $user;
 
         return $this;
     }
+
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+
+    public function setPath( ?string $path): void
+    {
+        $this->path = $path;
+    }
+
 }

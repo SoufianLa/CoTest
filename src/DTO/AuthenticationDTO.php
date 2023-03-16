@@ -51,6 +51,9 @@ class AuthenticationDTO
      */
     private $password;
 
+
+    private $photos;
+
     /**
      * @return mixed
      */
@@ -115,9 +118,19 @@ class AuthenticationDTO
         $this->password = $password;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPhotos()
+    {
+        return $this->photos ?? [];
+    }
 
-
-
-
-
+    /**
+     * @param mixed $photos
+     */
+    public function setPhotos($photos): void
+    {
+        $this->photos = $photos;
+    }
 }

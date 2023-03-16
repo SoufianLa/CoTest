@@ -20,10 +20,7 @@ class LocalUploader implements FileUploaderInterface
         $this->filePathGenerator = $filePathGenerator;
     }
 
-    /**
-     * @param FileInterface $file
-     * @param string $folderName
-     */
+
     public function upload(FileInterface $file, string $folderName): void
     {
         $adapter = new LocalAdapter($folderName);
@@ -36,7 +33,9 @@ class LocalUploader implements FileUploaderInterface
         }
         $path = $this->filePathGenerator->generate($file, $folderName);
         $file->setPath(basename($folderName)."/".basename($path));
+        $file->setName("p_".random_int());
         $this->filesystem->write(basename($path), file_get_contents($file->getFile()->getPathname()));
+
     }
 
     /**

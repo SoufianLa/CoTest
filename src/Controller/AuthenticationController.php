@@ -40,7 +40,7 @@ class AuthenticationController extends AbstractController
      *         mediaType="multipart/form-data",
      *         @OA\Schema(
      *             type="object",
-     *             required={"firstName", "lastName", "email", "password"},
+     *             required={"firstName", "lastName", "email", "password", "photos[]"},
      *             @OA\Property(
      *                 property="firstName",
      *                 description="John Doe",
@@ -67,7 +67,12 @@ class AuthenticationController extends AbstractController
      *                 property="avatar",
      *                 description="avatar",
      *                 type="file"
-     *             )
+     *             ),
+     *             @OA\Property(
+     *                 property="photos[]",
+     *                 description="photos",
+     *                 type="file"
+     *             ),
      *         )
      *     )
      * ),

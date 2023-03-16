@@ -36,6 +36,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
                 $dto->setLastName($request->get("lastName"));
                 $dto->setEmail($request->get("email"));
                 $dto->setPassword($request->get("password"));
+                $dto->setPhotos($request->files->get('photos'));
                 $groups[] = 'signup';
                 break;
             case 'login_user':

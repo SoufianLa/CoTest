@@ -4,6 +4,7 @@
 namespace App\Service;
 
 use App\DTO\AuthenticationDTO;
+use App\Entity\Photo;
 use App\Entity\Session;
 use App\Entity\User;
 use App\Exception\ApiException;
@@ -30,6 +31,11 @@ class AuthenticationService
             $user->setLastName($DTO->getLastName());
             $user->setEmail($DTO->getEmail());
             $user->setPassword($DTO->getPassword());
+            foreach ($DTO->getPhotos() as $ph) {
+                $photo = new Photo($ph);
+                $user->addPhotos($photo);
+                $this->em->persist($photo);
+            }
             $this->em->persist($user);
             $this->em->flush();
             return $user;
