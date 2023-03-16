@@ -18,7 +18,7 @@ interface FileInterface
 
     public function hasFile(): bool;
 
-    public function getPath(): ?string;
+    public function getPath();
 
     public function setPath(?string $path);
 }

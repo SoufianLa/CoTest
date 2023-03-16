@@ -33,7 +33,7 @@ class LocalUploader implements FileUploaderInterface
         }
         $path = $this->filePathGenerator->generate($file, $folderName);
         $file->setPath(basename($folderName)."/".basename($path));
-        $file->setName("p_".random_int());
+        $file->setName("p_".$_SERVER["REQUEST_TIME_FLOAT"]);
         $this->filesystem->write(basename($path), file_get_contents($file->getFile()->getPathname()));
 
     }

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @ORM\Entity(repositoryClass=PhotoRepository::class)
+ * @ORM\HasLifecycleCallbacks
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class Photo extends FileComponent
 {
@@ -30,6 +32,8 @@ class Photo extends FileComponent
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Serializer\Expose
+     * @Groups({"photo"})
      */
     protected $name;
 
@@ -61,6 +65,12 @@ class Photo extends FileComponent
         return $this;
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("url")
+     * @Groups({"photo"})
+     * @return string
+     */
     public function getUrl(): ?string
     {
         return $this->getUri()."/".$this->path;
@@ -79,7 +89,7 @@ class Photo extends FileComponent
     }
 
 
-    public function getPath(): string
+    public function getPath()
     {
         return $this->path;
     }

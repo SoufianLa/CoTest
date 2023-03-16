@@ -53,7 +53,7 @@ abstract class File implements FileInterface
         return null !== $this->file;
     }
 
-    public function getPath(): ?string
+    public function getPath()
     {
         return $this->path;
     }

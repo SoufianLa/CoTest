@@ -69,6 +69,8 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Photo::class, mappedBy="user", orphanRemoval=true)
+     * @Serializer\Expose
+     * @Groups({"photo"})
      */
     private $photos;
 
