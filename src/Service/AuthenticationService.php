@@ -50,11 +50,16 @@ class AuthenticationService
 
         if (!password_verify($DTO->getPassword(), $user->getPassword()))
             throw new ApiException(Response::HTTP_UNAUTHORIZED, "UNAUTHORIZED");
-
-        //break to continue
-        //$accessToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_ACCESS);
-
+        $this->setTokens($user);
         return $user;
+    }
+
+    public function setTokens(User $user): void
+    {
+        $accessToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_ACCESS);
+        $refreshToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_REFRESH);
+        $user->setAccessToken($accessToken);
+        $user->setRefreshToken($refreshToken);
 
     }
 

@@ -71,6 +71,18 @@ class User
      */
     private $photos;
 
+    /**
+     * @Serializer\Expose
+     * @Groups({"user"})
+     */
+    private $accessToken;
+
+    /**
+     * @Serializer\Expose
+     * @Groups({"user"})
+     */
+    private $refreshToken;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -201,4 +213,26 @@ class User
 
         return $this;
     }
+
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    public function setAccessToken($accessToken): void
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+
+    public function setRefreshToken($refreshToken): void
+    {
+        $this->refreshToken = $refreshToken;
+    }
+
+
 }

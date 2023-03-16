@@ -165,6 +165,7 @@ class AuthenticationController extends AbstractController
         $dto = new AuthenticationDTO();
         $this->dispatcher->dispatch(new GenericEvent($dto, ["request" => $request]), 'route.authentication');
         $user = $this->authService->login($dto);
-        return new JsonResponse($this->serializer->serialize(Util::render("LOGIN_OK", $user), "json"), Response::HTTP_OK, [], true);
+        $context = SerializationContext::create()->setGroups(["user", "with_time"])->setSerializeNull(true);
+        return new JsonResponse($this->serializer->serialize(Util::render("LOGIN_OK", $user), "json", $context), Response::HTTP_OK, [], true);
     }
 }
