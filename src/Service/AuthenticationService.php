@@ -6,6 +6,7 @@ namespace App\Service;
 use App\DTO\AuthenticationDTO;
 use App\Entity\User;
 use App\Exception\ApiException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,8 +20,8 @@ class AuthenticationService
 
     public function signUp(AuthenticationDTO $DTO): ?User
     {
-        try{
-            $user= new User();
+        try {
+            $user = new User();
             $user->setFirstName($DTO->getFirstName());
             $user->setLastName($DTO->getLastName());
             $user->setEmail($DTO->getEmail());
@@ -28,6 +29,8 @@ class AuthenticationService
             $this->em->persist($user);
             $this->em->flush();
             return $user;
+        }catch (UniqueConstraintViolationException $e) {
+                throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, "CONSTRAINS_VIOLATION");
         }catch (\Exception $ex) {
                 throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, $ex->getMessage());
         }
