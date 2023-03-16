@@ -83,6 +83,12 @@ class User
      */
     private $refreshToken;
 
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -232,6 +238,15 @@ class User
     public function setRefreshToken($refreshToken): void
     {
         $this->refreshToken = $refreshToken;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
 

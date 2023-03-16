@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\AuthenticationDTO;
+use App\Entity\User;
 use App\Helper\Util;
 use App\Service\AuthenticationService;
 use JMS\Serializer\SerializationContext;
@@ -148,6 +149,10 @@ class AuthenticationController extends AbstractController
      * @OA\Response(
      *       response=409,
      *       description="violation/conflict"
+     *  ),
+     * @OA\Response(
+     *       response=403,
+     *       description="forbiden"
      *  ),
      * @OA\Response(
      *       response=500,
