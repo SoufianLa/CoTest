@@ -1,0 +1,23 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: CobbleApi
+            description: This is CobbleApi
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: apiKey
+                    scheme: bearer
+                    bearerFormat: JWT
+                    name: X-AUTH-TOKEN
+                    in: header
+                    description: 'Value: {jwt}'
+                ApiSecret:
+                    type: apiKey
+                    name: X-APP-SECRET
+                    in: header
+                    description: 'Secret of the api'
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
