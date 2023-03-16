@@ -4,6 +4,7 @@
 namespace App\Service;
 
 use App\DTO\AuthenticationDTO;
+use App\Entity\Session;
 use App\Entity\User;
 use App\Exception\ApiException;
 use App\Security\Jwt;
@@ -50,16 +51,22 @@ class AuthenticationService
 
         if (!password_verify($DTO->getPassword(), $user->getPassword()))
             throw new ApiException(Response::HTTP_UNAUTHORIZED, "UNAUTHORIZED");
-        $this->setTokens($user);
+        $user->setSession($this->makeTokens($user));
         return $user;
     }
 
-    public function setTokens(User $user): void
+    public function makeTokens(User $user): Session
     {
         $accessToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_ACCESS);
         $refreshToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_REFRESH);
-        $user->setAccessToken($accessToken);
-        $user->setRefreshToken($refreshToken);
+        $session = $user->getSession() ?? new Session();;
+        $session->setAccessToken($accessToken);
+        $session->setRefreshToken($refreshToken);
+        $session->setRefreshNumber($session->getRefreshNumber() ?? 0);
+        $session->setUser($user);
+        $this->em->persist($session);
+        $this->em->flush();
+        return $session;
 
     }
 

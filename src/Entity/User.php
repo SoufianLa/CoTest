@@ -9,13 +9,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks
  * @Serializer\ExclusionPolicy("ALL")
  */
-class User
+class User implements UserInterface
 {
     use TimestampableTrait;
     /**
@@ -72,16 +73,11 @@ class User
     private $photos;
 
     /**
+     * @ORM\OneToOne(targetEntity=Session::class, mappedBy="user", cascade={"persist", "remove"})
      * @Serializer\Expose
-     * @Groups({"user"})
+     * @Groups({"Auth"})
      */
-    private $accessToken;
-
-    /**
-     * @Serializer\Expose
-     * @Groups({"user"})
-     */
-    private $refreshToken;
+    protected $session;
 
     /**
      * @ORM\Column(type="json")
@@ -220,25 +216,6 @@ class User
         return $this;
     }
 
-    public function getAccessToken()
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken($accessToken): void
-    {
-        $this->accessToken = $accessToken;
-    }
-
-    public function getRefreshToken()
-    {
-        return $this->refreshToken;
-    }
-
-    public function setRefreshToken($refreshToken): void
-    {
-        $this->refreshToken = $refreshToken;
-    }
 
     public function getRoles(): array
     {
@@ -249,5 +226,44 @@ class User
         return array_unique($roles);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsername()
+    {
+        return $this->getEmail();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+    public function getSession(): ?Session
+    {
+        return $this->session;
+    }
+
+    public function setSession(Session $session): self
+    {
+        $this->session = $session;
+
+        // set the owning side of the relation if necessary
+        if ($session->getUser() !== $this) {
+            $session->setUser($this);
+        }
+
+        return $this;
+    }
 
 }

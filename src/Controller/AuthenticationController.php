@@ -170,7 +170,34 @@ class AuthenticationController extends AbstractController
         $dto = new AuthenticationDTO();
         $this->dispatcher->dispatch(new GenericEvent($dto, ["request" => $request]), 'route.authentication');
         $user = $this->authService->login($dto);
-        $context = SerializationContext::create()->setGroups(["user", "with_time"])->setSerializeNull(true);
+        $context = SerializationContext::create()->setGroups(["user", "with_time", "Auth"])->setSerializeNull(true);
         return new JsonResponse($this->serializer->serialize(Util::render("LOGIN_OK", $user), "json", $context), Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Route("/me",methods={"GET"}, name="fetch_user")
+     * @OA\Response(
+     *       response=200,
+     *       description="Returns new session"
+     *  ),
+     * @OA\Response(
+     *       response=401,
+     *       description="unauthorized to refresh"
+     *  ),
+     * @OA\Response(
+     *       response=500,
+     *       description="internal error"
+     *  )
+     * @OA\Tag(name="Authentication")
+     * @Security(name="ApiSecret")
+     * @Security(name="ApiLocale")
+     * @Security(name="Bearer")
+     * @return JsonResponse
+     */
+    public function fetchUserAction(){
+        $user = $this->getUser();
+        $context = SerializationContext::create()->setGroups(["user", "Auth"])->setSerializeNull(true);
+        return new JsonResponse($this->serializer->serialize(Util::render("FETCH_OK", $user), "json", $context), Response::HTTP_OK, [], true);
+    }
+
 }

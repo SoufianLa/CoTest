@@ -3,6 +3,7 @@
 
 namespace App\Security;
 
+use App\Entity\Session;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,6 +67,18 @@ class Authenticator extends AbstractGuardAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
+        if (is_null($user->getSession())) {
+            return false;
+        }
+
+        $formattedToken = Jwt::PREFIX_ACCESS. " " . $credentials['token'];
+        /* @var Session $session */
+        $session = $user->getSession();
+
+        // In case the token got updated and the user connects with the previous token
+        if (strcmp($session->getAccessToken(), $formattedToken)) {
+            return false;
+        }
         return true;
     }
 
