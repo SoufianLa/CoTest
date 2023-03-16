@@ -2,10 +2,13 @@
 
 namespace App\Entity\Traits;
 
+
 trait TimestampableTrait
 {
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Expose
+     * @Groups({"with_time"})
      */
     protected $createdAt;
 

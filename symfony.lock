@@ -88,6 +88,24 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "jms/metadata": {
+        "version": "2.8.0"
+    },
+    "jms/serializer": {
+        "version": "3.23.0"
+    },
+    "jms/serializer-bundle": {
+        "version": "5.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "4.0",
+            "ref": "cc04e10cf7171525b50c18b36004edf64cb478be"
+        },
+        "files": [
+            "config/packages/jms_serializer.yaml"
+        ]
+    },
     "knplabs/gaufrette": {
         "version": "v0.9.0"
     },
@@ -130,6 +148,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.5.1"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "1.16.1"
     },
     "psr/cache": {
         "version": "1.0.1"

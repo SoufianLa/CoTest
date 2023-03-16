@@ -3,6 +3,7 @@
 
 namespace App\Subscriber\Route;
 
+use App\Exception\ApiException;
 use App\Helper\Util;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use App\DTO\AuthenticationDTO;
@@ -10,7 +11,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthenticationSubscriber implements EventSubscriberInterface
 {
@@ -44,7 +44,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
         $violation = Util::formatViolationMessage($this->validator->validate($dto, null, $groups));
         if ($violation) {
-            throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY, $violation);
+            throw new ApiException(Response::HTTP_UNPROCESSABLE_ENTITY, $violation);
         }
     }
     public static function getSubscribedEvents(): array

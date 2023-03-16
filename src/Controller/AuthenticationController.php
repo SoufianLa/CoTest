@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\DTO\AuthenticationDTO;
+use App\Helper\Util;
 use App\Service\AuthenticationService;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -19,10 +24,12 @@ class AuthenticationController extends AbstractController
 {
     private $authService;
     private $dispatcher;
+    private $serializer;
 
-    public  function __construct(AuthenticationService $authService, EventDispatcherInterface $dispatcher){
+    public  function __construct(AuthenticationService $authService, EventDispatcherInterface $dispatcher, SerializerInterface $serializer){
         $this->authService =$authService;
         $this->dispatcher = $dispatcher;
+        $this->serializer = $serializer;
     }
     /**
      * @Route("/auth/signup", methods={"POST"}, name="signup")
@@ -94,9 +101,12 @@ class AuthenticationController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function signUp(Request $request): JsonResponse
     {
-        return new JsonResponse(["ok"=>"ok", 200]);
-
+        $dto = new AuthenticationDTO();
+        $this->dispatcher->dispatch(new GenericEvent($dto, ['request' => $request]), 'route.authentication');
+        $user = $this->authService->signUp($dto);
+        $context = SerializationContext::create()->setGroups(["user", "with_time"])->setSerializeNull(true);
+        return new JsonResponse($this->serializer->serialize(Util::render('signup.user_created', $user), 'json', $context), Response::HTTP_OK, [], true);
     }
 }

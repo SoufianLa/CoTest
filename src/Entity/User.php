@@ -7,10 +7,13 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class User
 {
@@ -19,16 +22,22 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Serializer\Expose
+     * @Groups({"user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Serializer\Expose
+     * @Groups({"user"})
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Serializer\Expose
+     * @Groups({"user"})
      */
     private $lastName;
 
@@ -37,6 +46,8 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+     * @Serializer\Expose
+     * @Groups({"user"})
      */
     private $email;
 
@@ -53,7 +64,7 @@ class User
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $avatar;
+    private $avatar="avatar.jpg";
 
     /**
      * @ORM\OneToMany(targetEntity=Photo::class, mappedBy="user", orphanRemoval=true)
@@ -96,6 +107,11 @@ class User
     }
 
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("fullName")
+     *
+     */
     public function getFullName()
     {
         return $this->firstName." ".$this->lastName;

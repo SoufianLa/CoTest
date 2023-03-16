@@ -16,5 +16,9 @@ class Util
         }
         return false;
     }
+    public static function render(string $message, $body = null): array
+    {
+        return ['message' => $message, 'body' => isset($body) ? $body : new \ArrayObject()];
+    }
 
 }
