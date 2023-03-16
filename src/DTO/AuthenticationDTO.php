@@ -9,12 +9,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AuthenticationDTO
 {
     /**
-     * @Assert\NotBlank(groups={"signup"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 25,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters",
+     *      allowEmptyString = false,
+     *     groups={"signup"}
+     * )
      */
     private $firstName;
 
     /**
-     * @Assert\NotBlank(groups={"signup"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 25,
+     *      minMessage = "Your last name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your last name cannot be longer than {{ limit }} characters",
+     *      allowEmptyString = false,
+     *     groups={"signup"}
+     * )
      */
     private $lastName;
 
@@ -25,7 +39,15 @@ class AuthenticationDTO
     private $email;
 
     /**
-     * @Assert\NotBlank(groups={"signup", "login"})
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50,
+     *      minMessage = "Your password must be at least {{ limit }} characters long",
+     *      maxMessage = "Your password cannot be longer than {{ limit }} characters",
+     *      allowEmptyString = false,
+     *     groups={"signup", "login"}
+     * )
+     * @Assert\Regex("/\d/", groups={"signup", "login"}, message="The password must contain at least one number.")
      */
     private $password;
 
