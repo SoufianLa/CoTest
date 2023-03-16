@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -54,9 +56,15 @@ class User
     private $avatar;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\OneToMany(targetEntity=Photo::class, mappedBy="user", orphanRemoval=true)
      */
-    private $photos = [];
+    private $photos;
+
+    public function __construct()
+    {
+        $this->photos = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -90,12 +98,12 @@ class User
 
     public function getFullName()
     {
-        return $this->firstName+" "+$this->lastName;
+        return $this->firstName." ".$this->lastName;
     }
 
     public function setFullName($firstName, $lastName): void
     {
-        $this->fullName = $firstName+" "+$lastName;
+        $this->fullName = $firstName." ".$lastName;
     }
 
 
@@ -148,14 +156,32 @@ class User
         return $this;
     }
 
-    public function getPhotos(): ?array
+    /**
+     * @return Collection|Photo[]
+     */
+    public function getPhotos(): Collection
     {
         return $this->photos;
     }
 
-    public function setPhotos(array $photos): self
+    public function addPhotos(Photo $photos): self
     {
-        $this->photos = $photos;
+        if (!$this->photos->contains($photos)) {
+            $this->photos[] = $photos;
+            $photos->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhotos(Photo $photos): self
+    {
+        if ($this->photos->removeElement($photos)) {
+            // set the owning side to null (unless already changed)
+            if ($photos->getUser() === $this) {
+                $photos->setUser(null);
+            }
+        }
 
         return $this;
     }
