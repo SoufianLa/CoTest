@@ -20,12 +20,12 @@ class AuthenticationDTO
 
 
     /**
-     * @Assert\NotBlank(groups={"signup"})
+     * @Assert\NotBlank(groups={"signup", "login"})
      */
     private $email;
 
     /**
-     * @Assert\NotBlank(groups={"signup"})
+     * @Assert\NotBlank(groups={"signup", "login"})
      */
     private $password;
 
@@ -90,7 +90,7 @@ class AuthenticationDTO
      */
     public function setPassword($password): void
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $password;
     }
 
 

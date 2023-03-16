@@ -6,6 +6,7 @@ namespace App\Service;
 use App\DTO\AuthenticationDTO;
 use App\Entity\User;
 use App\Exception\ApiException;
+use App\Security\Jwt;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthenticationService
 {
     private $em;
-    public function __construct(EntityManagerInterface $entityManager)
+    private $jwt;
+    public function __construct(EntityManagerInterface $entityManager, Jwt $jwt)
     {
         $this->em = $entityManager;
+        $this->jwt = $jwt;
     }
 
     public function signUp(AuthenticationDTO $DTO): ?User
@@ -34,6 +37,25 @@ class AuthenticationService
         }catch (\Exception $ex) {
                 throw new ApiException(Response::HTTP_INTERNAL_SERVER_ERROR, $ex->getMessage());
         }
+    }
+
+    public  function login(AuthenticationDTO $DTO): ?User
+    {
+        /* @var User $user */
+        $user = $this->em->getRepository(User::class)->findOneBy(["email" => $DTO->getEmail()]);
+
+        if (!isset($user)) {
+            throw new ApiException(Response::HTTP_BAD_REQUEST, "LOGIN_FAILED");
+        }
+
+        if (!password_verify($DTO->getPassword(), $user->getPassword()))
+            throw new ApiException(Response::HTTP_UNAUTHORIZED, "UNAUTHORIZED");
+
+        //break to continue
+        //$accessToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_ACCESS);
+
+        return $user;
+
     }
 
 }

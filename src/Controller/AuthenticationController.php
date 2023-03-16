@@ -109,4 +109,62 @@ class AuthenticationController extends AbstractController
         $context = SerializationContext::create()->setGroups(["user", "with_time"])->setSerializeNull(true);
         return new JsonResponse($this->serializer->serialize(Util::render('signup.user_created', $user), 'json', $context), Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Route("/auth/login",methods={"POST"}, name="login_user")
+     * @OA\RequestBody(
+     *         description="Input data format",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"email", "password"},
+     *                @OA\Property(
+     *                    property="email",
+     *                    type="string",
+     *                    description="email",
+     *                    example="email@email.com"
+     *                ),
+     *                @OA\Property(
+     *                    property="password",
+     *                    type="string",
+     *                    description="password",
+     *                    example="192443"
+     *                ),
+     *             )
+     *         )
+     *     )
+     * @OA\Response(
+     *       response=200,
+     *       description="success"
+     *  ),
+     * @OA\Response(
+     *       response=400,
+     *       description="failed"
+     *  ),
+     * @OA\Response(
+     *       response=422,
+     *       description="Missing parameter"
+     *  ),
+     * @OA\Response(
+     *       response=409,
+     *       description="violation/conflict"
+     *  ),
+     * @OA\Response(
+     *       response=500,
+     *       description="internal error"
+     *  )
+     * )
+     * @OA\Tag(name="Authentication")
+     * @Security(name="ApiSecret")
+     * @Security(name="ApiLocale")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function loginAction(Request $request)
+    {
+        $dto = new AuthenticationDTO();
+        $this->dispatcher->dispatch(new GenericEvent($dto, ["request" => $request]), 'route.authentication');
+        $user = $this->authService->login($dto);
+        return new JsonResponse($this->serializer->serialize(Util::render("LOGIN_OK", $user), "json"), Response::HTTP_OK, [], true);
+    }
 }

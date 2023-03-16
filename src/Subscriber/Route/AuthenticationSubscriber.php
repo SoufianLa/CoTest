@@ -38,6 +38,10 @@ class AuthenticationSubscriber implements EventSubscriberInterface
                 $dto->setPassword($request->get("password"));
                 $groups[] = 'signup';
                 break;
+            case 'login_user':
+               $dto->setEmail($request->get("email"));
+               $dto->setPassword($request->get("password"));
+               $groups[] = 'login';
             default:
                 return;
         }
