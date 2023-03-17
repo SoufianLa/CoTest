@@ -126,6 +126,8 @@ class User implements UserInterface
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("fullName")
+     * @Serializer\Expose
+     * @Groups({"user"})
      *
      */
     public function getFullName()
@@ -174,6 +176,16 @@ class User implements UserInterface
         $this->active = $active;
 
         return $this;
+    }
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("avatar_url")
+     * @Serializer\Expose
+     * @Groups({"user"})
+     *
+     */
+    public function getAvatarUrl(){
+        return $_ENV['BASE_IMAGE_URL'].$this->avatar;
     }
 
     public function getAvatar(): ?string

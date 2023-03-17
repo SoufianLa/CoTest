@@ -64,11 +64,6 @@ class AuthenticationController extends AbstractController
      *                    example="192443"
      *                ),
      *             @OA\Property(
-     *                 property="avatar",
-     *                 description="avatar",
-     *                 type="file"
-     *             ),
-     *             @OA\Property(
      *                 property="photos[]",
      *                 description="photos",
      *                 type="file"
@@ -112,7 +107,7 @@ class AuthenticationController extends AbstractController
         $dto = new AuthenticationDTO();
         $this->dispatcher->dispatch(new GenericEvent($dto, ['request' => $request]), 'route.authentication');
         $user = $this->authService->signUp($dto);
-        $context = SerializationContext::create()->setGroups(["user", "with_time"])->setSerializeNull(true);
+        $context = SerializationContext::create()->setGroups(["user", "with_time", "photo"])->setSerializeNull(true);
         return new JsonResponse($this->serializer->serialize(Util::render('signup.user_created', $user), 'json', $context), Response::HTTP_OK, [], true);
     }
 

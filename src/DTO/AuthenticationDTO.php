@@ -52,6 +52,15 @@ class AuthenticationDTO
     private $password;
 
 
+    /**
+     * @Assert\Count(
+     *      min = 1,
+     *      max = 4,
+     *      minMessage = "You must specify at least one image",
+     *      maxMessage = "You cannot specify more than {{ limit }} images",
+     *      groups={"signup"}
+     * )
+     */
     private $photos;
 
     /**

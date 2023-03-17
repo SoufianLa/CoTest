@@ -73,7 +73,7 @@ class Photo extends FileComponent
      */
     public function getUrl(): ?string
     {
-        return $this->getUri()."/".$this->path;
+        return $this->getUri().$this->path;
     }
 
     public function getUser(): ?User
