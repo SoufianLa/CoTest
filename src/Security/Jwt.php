@@ -8,12 +8,8 @@ use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderToken
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 
-class Jwt
+class Jwt implements TokenGeneratorInterface
 {
-    const TYPE_ACCESS = "access";
-    const TYPE_REFRESH = "refresh";
-    const PREFIX_REFRESH = "Ref";
-    const PREFIX_ACCESS = "Bearer";
     private $encoder;
 
     public function __construct(JWTEncoderInterface $encoder)

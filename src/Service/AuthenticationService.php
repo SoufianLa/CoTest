@@ -5,10 +5,8 @@ namespace App\Service;
 
 use App\DTO\AuthenticationDTO;
 use App\Entity\Photo;
-use App\Entity\Session;
 use App\Entity\User;
 use App\Exception\ApiException;
-use App\Security\Jwt;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthenticationService
 {
     private $em;
-    private $jwt;
-    public function __construct(EntityManagerInterface $entityManager, Jwt $jwt)
+    private $sessionService;
+    public function __construct(EntityManagerInterface $entityManager, SessionService $sessionService)
     {
         $this->em = $entityManager;
-        $this->jwt = $jwt;
+        $this->sessionService = $sessionService;
     }
 
     public function signUp(AuthenticationDTO $DTO): ?User
@@ -57,23 +55,7 @@ class AuthenticationService
 
         if (!password_verify($DTO->getPassword(), $user->getPassword()))
             throw new ApiException(Response::HTTP_UNAUTHORIZED, "UNAUTHORIZED");
-        $user->setSession($this->makeTokens($user));
-        return $user;
-    }
-
-    public function makeTokens(User $user): Session
-    {
-        $accessToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_ACCESS);
-        $refreshToken = $this->jwt->generateToken(["id" => $user->getId(), "email" => $user->getEmail()], Jwt::TYPE_REFRESH);
-        $session = $user->getSession() ?? new Session();;
-        $session->setAccessToken($accessToken);
-        $session->setRefreshToken($refreshToken);
-        $session->setRefreshNumber($session->getRefreshNumber() ?? 0);
-        $session->setUser($user);
-        $this->em->persist($session);
-        $this->em->flush();
-        return $session;
-
+        return $this->sessionService->generateSession($user);
     }
 
 }
