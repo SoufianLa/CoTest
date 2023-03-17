@@ -7,6 +7,7 @@ use App\DTO\AuthenticationDTO;
 use App\Entity\Photo;
 use App\Entity\User;
 use App\Exception\ApiException;
+use App\Hydrator\UserHydrator;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,25 +16,19 @@ class AuthenticationService
 {
     private $em;
     private $sessionService;
-    public function __construct(EntityManagerInterface $entityManager, SessionService $sessionService)
+    private $userHydrator;
+    public function __construct(EntityManagerInterface $entityManager, SessionService $sessionService, UserHydrator $userHydrator)
     {
         $this->em = $entityManager;
         $this->sessionService = $sessionService;
+        $this->userHydrator = $userHydrator;
     }
 
     public function signUp(AuthenticationDTO $DTO): ?User
     {
         try {
             $user = new User();
-            $user->setFirstName($DTO->getFirstName());
-            $user->setLastName($DTO->getLastName());
-            $user->setEmail($DTO->getEmail());
-            $user->setPassword($DTO->getPassword());
-            foreach ($DTO->getPhotos() as $ph) {
-                $photo = new Photo($ph);
-                $user->addPhotos($photo);
-                $this->em->persist($photo);
-            }
+            $this->userHydrator->hydrateUserFromDTO($user, $DTO);
             $this->em->persist($user);
             $this->em->flush();
             return $user;
@@ -57,5 +52,4 @@ class AuthenticationService
             throw new ApiException(Response::HTTP_UNAUTHORIZED, "UNAUTHORIZED");
         return $this->sessionService->generateSession($user);
     }
-
 }
