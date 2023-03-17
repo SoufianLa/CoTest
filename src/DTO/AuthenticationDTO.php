@@ -35,6 +35,11 @@ class AuthenticationDTO
 
     /**
      * @Assert\NotBlank(groups={"signup", "login"})
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true,
+     *     groups={"signup"}
+     * )
      */
     private $email;
 
