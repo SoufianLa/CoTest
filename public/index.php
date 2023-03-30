@@ -20,6 +20,13 @@ if ($trustedHosts = $_SERVER['TRUSTED_HOSTS'] ?? false) {
     Request::setTrustedHosts([$trustedHosts]);
 }
 
+
+header('Access-Control-Allow-Origin:*');
+header('Access-Control-Allow-Credentials:true');
+header('Access-Control-Allow-Headers:X-Requested-With, Content-Type, withCredentials, X-AUTH-TOKEN, X-APP-SECRET');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    die();
+}
 $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
