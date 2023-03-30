@@ -185,7 +185,7 @@ class User implements UserInterface
      *
      */
     public function getAvatarUrl(){
-        return $_ENV['BASE_IMAGE_URL'].$this->avatar;
+        return $_ENV['BASE_IMAGE_URL']."images/".$this->avatar;
     }
 
     public function getAvatar(): ?string

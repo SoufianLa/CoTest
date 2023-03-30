@@ -107,8 +107,8 @@ class AuthenticationController extends AbstractController
         $dto = new AuthenticationDTO();
         $this->dispatcher->dispatch(new GenericEvent($dto, ['request' => $request]), 'route.authentication');
         $user = $this->authService->signUp($dto);
-        $context = SerializationContext::create()->setGroups(["user", "with_time", "photo"])->setSerializeNull(true);
-        return new JsonResponse($this->serializer->serialize(Util::render('signup.user_created', $user), 'json', $context), Response::HTTP_OK, [], true);
+        $context = SerializationContext::create()->setGroups(["user"])->setSerializeNull(true);
+        return new JsonResponse($this->serializer->serialize(Util::render('signup.user_created', $user), 'json', $context), Response::HTTP_CREATED, [], true);
     }
 
     /**
@@ -170,7 +170,7 @@ class AuthenticationController extends AbstractController
         $dto = new AuthenticationDTO();
         $this->dispatcher->dispatch(new GenericEvent($dto, ["request" => $request]), 'route.authentication');
         $user = $this->authService->login($dto);
-        $context = SerializationContext::create()->setGroups(["user", "with_time", "Auth", "photo"])->setSerializeNull(true);
+        $context = SerializationContext::create()->setGroups(["user", "with_time", "Auth"])->setSerializeNull(true);
         return new JsonResponse($this->serializer->serialize(Util::render("LOGIN_OK", $user), "json", $context), Response::HTTP_OK, [], true);
     }
 
@@ -196,7 +196,7 @@ class AuthenticationController extends AbstractController
      */
     public function fetchUserAction(){
         $user = $this->getUser();
-        $context = SerializationContext::create()->setGroups(["user", "Auth"])->setSerializeNull(true);
+        $context = SerializationContext::create()->setGroups(["user", "Auth", "photo"])->setSerializeNull(true);
         return new JsonResponse($this->serializer->serialize(Util::render("FETCH_OK", $user), "json", $context), Response::HTTP_OK, [], true);
     }
 

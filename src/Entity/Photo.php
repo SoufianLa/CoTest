@@ -27,6 +27,7 @@ class Photo extends FileComponent
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"photo"})
      */
     protected $id;
 
